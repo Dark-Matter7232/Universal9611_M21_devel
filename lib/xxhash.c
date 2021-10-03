@@ -73,19 +73,6 @@ static const uint64_t PRIME64_3 =  1609587929392839161ULL;
 static const uint64_t PRIME64_4 =  9650029242287828579ULL;
 static const uint64_t PRIME64_5 =  2870177450012600261ULL;
 
-/*-**************************
- *  Utils
- ***************************/
-void xxh32_copy_state(struct xxh32_state *dst, const struct xxh32_state *src)
-{
-	memcpy(dst, src, sizeof(*dst));
-}
-
-void xxh64_copy_state(struct xxh64_state *dst, const struct xxh64_state *src)
-{
-	memcpy(dst, src, sizeof(*dst));
-}
-
 /*-***************************
  * Simple Hash Functions
  ****************************/
