@@ -425,7 +425,7 @@ AFLAGS_MODULE   =
 LDFLAGS_MODULE  = --strip-debug
 CFLAGS_KERNEL	=
 AFLAGS_KERNEL	=
-LDFLAGS_vmlinux =
+LDFLAGS_vmlinux = --strip-debug
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE    := \
@@ -762,6 +762,13 @@ ARCH_AFLAGS :=
 ARCH_CFLAGS :=
 include arch/$(SRCARCH)/Makefile
 
+OPT_FLAGS += -O3 -mcpu=cortex-a73+crypto+crc
+
+KBUILD_CFLAGS += $(OPT_FLAGS)
+KBUILD_AFLAGS += $(OPT_FLAGS)
+KBUILD_LDFLAGS += $(OPT_FLAGS)
+
+
 KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
@@ -774,8 +781,9 @@ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
 else
 ifeq ($(cc-name),clang)
-KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a73 -mtune=cortex-a73
+KBUILD_CFLAGS	+= $(OPT_FLAGS)
+KBUILD_AFLAGS   += $(OPT_FLAGS)
+KBUILD_LDFLAGS  += $(OPT_FLAGS)
 ifdef CONFIG_LTO_CLANG
 KBUILD_CFLAG	+= -fwhole-program-vtables
 endif
@@ -873,7 +881,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 endif
 
 ifeq ($(ld-name),lld)
-LDFLAGS += -O3
+LDFLAGS += -O3 --strip-debug
 endif
 
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
