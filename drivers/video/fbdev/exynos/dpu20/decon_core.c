@@ -58,7 +58,6 @@
 #include "../../../../dma-buf/sync_debug.h"
 #include "dpp.h"
 #include <linux/devfreq_boost.h>
-#include <linux/cpu_input_boost.h>
 #if defined(CONFIG_EXYNOS_DISPLAYPORT)
 #include "displayport.h"
 #endif
@@ -2722,7 +2721,6 @@ static int decon_set_win_config(struct decon_device *decon,
 
 	num_of_window = decon_get_active_win_count(decon, win_data);
 	if (num_of_window) {
-                cpu_input_boost_kick_max(60);  
                 devfreq_boost_kick(DEVFREQ_EXYNOS_MIF);
 		win_data->retire_fence = decon_create_fence(decon, &sync_file);
 		if (win_data->retire_fence < 0)
@@ -2749,7 +2747,6 @@ static int decon_set_win_config(struct decon_device *decon,
 			sizeof(struct decon_rect));
 
 	if (num_of_window) {
-                cpu_input_boost_kick_max(60);
                 devfreq_boost_kick(DEVFREQ_EXYNOS_MIF);
 		decon_create_release_fences(decon, win_data, sync_file);
 #if !defined(CONFIG_SUPPORT_LEGACY_FENCE)
@@ -3877,7 +3874,7 @@ static int decon_create_update_thread(struct decon_device *decon, char *name)
 	decon->up_list_saved = false;
 	atomic_set(&decon->up.remaining_frame, 0);
 	kthread_init_worker(&decon->up.worker);
-	decon->up.thread = kthread_run(kthread_worker_fn,
+	decon->up.thread = kthread_run_perf_critical(cpu_perf_mask, kthread_worker_fn,
 			&decon->up.worker, name);
 	if (IS_ERR(decon->up.thread)) {
 		decon->up.thread = NULL;

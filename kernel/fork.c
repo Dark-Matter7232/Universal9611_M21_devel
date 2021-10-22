@@ -2325,10 +2325,10 @@ long _do_fork(unsigned long clone_flags,
 	int trace = 0;
 	long nr;
 
-	/* Boost DDR bus and CPU to the max for 50 ms and 60 ms respectively when userspace launches an app */
+	/* Boost DDR bus and CPU to the max for 100 ms and 250 ms respectively when userspace launches an app */
 	if (task_is_zygote(current))
-                cpu_input_boost_kick_max(60);  
-                devfreq_boost_kick_max(DEVFREQ_EXYNOS_MIF, 50);	
+                cpu_input_boost_kick_max(250);
+                devfreq_boost_kick_max(DEVFREQ_EXYNOS_MIF, 100);
 
 	/*
 	 * Determine whether and which event to report to ptracer.  When
